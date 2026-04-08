@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figure 1 — Network Ecology of Pathogenic Narrative Cascades</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: #f4f4f2;
+    color: #1a1a1a;
+    padding: 32px 24px;
+    min-height: 100vh;
+  }
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    padding: 36px 40px 40px;
+  }
+  .journal-label {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #888;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .fig-number {
+    font-size: 13px;
+    font-weight: 600;
+    color: #2c5f8a;
+    margin-bottom: 4px;
+  }
+  .fig-title {
+    font-size: 17px;
+    font-weight: 500;
+    color: #1a1a1a;
+    line-height: 1.4;
+    margin-bottom: 6px;
+  }
+  .fig-sub {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 22px;
+    line-height: 1.5;
+  }
+  .toggle-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+  .tog {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    background: transparent;
+    color: #666;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .tog:hover { border-color: #2c5f8a; color: #2c5f8a; }
+  .tog.active {
+    background: #eaf1f8;
+    color: #2c5f8a;
+    border-color: #2c5f8a;
+  }
+  svg { display: block; width: 100%; }
+  .legend-row {
+    display: flex;
+    gap: 20px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    padding-top: 14px;
+    border-top: 1px solid #eee;
+  }
+  .leg {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: #666;
+  }
+  .leg-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .leg-line { width: 18px; height: 3px; border-radius: 2px; flex-shrink: 0; }
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-top: 18px;
+  }
+  .stat-card {
+    background: #f8f8f6;
+    border-radius: 7px;
+    padding: 10px 12px;
+    border: 1px solid #eee;
+  }
+  .stat-name { font-size: 11px; color: #888; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stat-val  { font-size: 16px; font-weight: 500; color: #1a1a1a; }
+  .stat-tier { font-size: 10px; margin-top: 2px; font-weight: 600; }
+  .tier-High      { color: #c0392b; }
+  .tier-Medium    { color: #b7700a; }
+  .tier-Low       { color: #2e7d32; }
+  .tier-Stable    { color: #888; }
+  .tier-Increased { color: #1D9E75; }
+  .tier-Decreased { color: #c0392b; }
+  .caption {
+    font-size: 12px;
+    color: #666;
+    margin-top: 18px;
+    line-height: 1.7;
+    border-top: 1px solid #eee;
+    padding-top: 14px;
+  }
+  .caption strong { color: #444; }
+  .meta {
+    margin-top: 28px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+    font-size: 11px;
+    color: #aaa;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  @media (max-width: 600px) {
+    .page { padding: 20px 16px; }
+    .stat-row { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="journal-label">Online Journalism Review — Supplementary Interactive Figure</div>
+  <div class="fig-number">Figure 1</div>
+  <div class="fig-title">Network ecology of pathogenic narrative cascades — structural role mapping</div>
+  <div class="fig-sub">
+    Node size = eigenvector centrality (cascade potential) &nbsp;·&nbsp;
+    Node color = structural risk tier &nbsp;·&nbsp;
+    Edge thickness = amplification weight (mention=1 → hyperlink=4)
+    <br>Toggle between pre-intervention, post-intervention, and change (Δ) states.
+  </div>
+
+  <div class="toggle-row">
+    <button class="tog active" onclick="setState('pre')">Pre-intervention</button>
+    <button class="tog" onclick="setState('post')">Post-intervention</button>
+    <button class="tog" onclick="setState('delta')">Change (Δ)</button>
+  </div>
+
+  <svg id="netsvg" viewBox="0 0 760 380">
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+        <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+    </defs>
+    <g id="edges"></g>
+    <g id="nodes"></g>
+    <g id="nlabels"></g>
+  </svg>
+
+  <div class="legend-row">
+    <div class="leg"><div class="leg-dot" style="background:#c0392b"></div> High cascade risk</div>
+    <div class="leg"><div class="leg-dot" style="background:#b7700a"></div> Medium cascade risk</div>
+    <div class="leg"><div class="leg-dot" style="background:#2e7d32"></div> Low cascade risk</div>
+    <div class="leg"><div class="leg-line" style="background:#1D9E75"></div> Increased post-intervention</div>
+    <div class="leg"><div class="leg-line" style="background:#c0392b"></div> Decreased post-intervention</div>
+    <div class="leg" style="margin-left:auto; font-style:italic; color:#aaa">Hover nodes for full metrics</div>
+  </div>
+
+  <div class="stat-row" id="statrow"></div>
+
+  <div class="caption">
+    <strong>Reading this figure:</strong> Nodes represent actors in a regional media information ecology.
+    Node size encodes eigenvector centrality — an actor's cascade potential derived from connection to other
+    high-influence nodes, the primary structural mechanism behind credibility laundering.
+    Node color encodes structural risk tier computed from the composite formula:
+    <em>Risk = 0.4(Eigenvector) + 0.3(Weighted Degree) + 0.3(Betweenness)</em>.
+    Directed edges show observed information transfers; edge thickness reflects amplification weight.
+    The post-intervention state models a containment-only intervention — tie-strength reduction on
+    high-risk nodes without actor removal — consistent with the epidemiological principle of reducing
+    transmission virulence while preserving network integrity.
+    Betweenness and closeness centrality (structural backbone) remain unchanged across both states,
+    confirming that the intervention does not fragment the network.
+    <br><br>
+    <strong>Risk tiers represent relative structural cascade potential within this network snapshot — not
+    claims about actor intent, content accuracy, or political orientation. The framework is content-neutral
+    and jurisdictionally agnostic.</strong>
+  </div>
+
+  <div class="meta">
+    <span>Yip, J. — Network Ecology of Information framework · 5D Risk Assessment Model</span>
+    <span>Interactive figure · Open in any modern browser · No internet connection required</span>
+  </div>
+
+</div>
+
+<script>
+const NODES = {
+  A: { label:"News Site A",  role:"Source node",          x:130, y:300 },
+  B: { label:"Influencer B", role:"Superspreader",        x:340, y: 80 },
+  C: { label:"Bot C",        role:"Amplification hub",    x:580, y:210 },
+  D: { label:"Journalist D", role:"Transmission vector",  x:160, y:175 },
+  E: { label:"Community E",  role:"Influence sink",       x:460, y:318 },
+};
+
+const EDGES = [
+  { f:"A", t:"B", w:1 },
+  { f:"B", t:"E", w:2 },
+  { f:"C", t:"E", w:2 },
+  { f:"D", t:"E", w:4 },
+  { f:"B", t:"D", w:1 },
+  { f:"A", t:"D", w:1 },
+  { f:"A", t:"E", w:1 },
+];
+
+const STATES = {
+  pre: {
+    A:{ eigen:0.509, degree:1.75, between:0.000, risk:"Medium", score:0.402 },
+    B:{ eigen:1.000, degree:4.75, between:0.250, risk:"High",   score:1.150 },
+    C:{ eigen:0.733, degree:2.75, between:0.083, risk:"High",   score:0.743 },
+    D:{ eigen:0.686, degree:3.00, between:0.250, risk:"Low",    score:0.824 },
+    E:{ eigen:0.395, degree:1.75, between:0.083, risk:"Medium", score:0.506 },
+  },
+  post: {
+    A:{ eigen:0.399, degree:1.00, between:0.000, risk:"Medium", score:0.337 },
+    B:{ eigen:0.661, degree:2.00, between:0.250, risk:"Medium", score:0.864 },
+    C:{ eigen:0.571, degree:1.50, between:0.083, risk:"Medium", score:0.534 },
+    D:{ eigen:1.000, degree:2.75, between:0.250, risk:"High",   score:1.000 },
+    E:{ eigen:0.926, degree:2.25, between:0.083, risk:"Medium", score:0.673 },
+  },
+  delta: {
+    A:{ eigen:-0.110, risk:"Stable",    score:-0.065 },
+    B:{ eigen:-0.339, risk:"Decreased", score:-0.286 },
+    C:{ eigen:-0.162, risk:"Stable",    score:-0.209 },
+    D:{ eigen:+0.314, risk:"Stable",    score:+0.176 },
+    E:{ eigen:+0.531, risk:"Increased", score:+0.167 },
+  }
+};
+
+const RISK_COLOR = {
+  High:"#c0392b", Medium:"#b7700a", Low:"#2e7d32",
+  Stable:"#888", Increased:"#1D9E75", Decreased:"#c0392b"
+};
+
+const RANK_ORDER = {
+  pre:  ["B","C","D","A","E"],
+  post: ["D","E","B","C","A"],
+  delta:["E","D","C","B","A"],
+};
+
+function getR(key, st){
+  const vals = Object.values(STATES[st]).map(v=>Math.abs(v.eigen));
+  const mn=Math.min(...vals), mx=Math.max(...vals);
+  const v=Math.abs(STATES[st][key].eigen);
+  return mx===mn ? 28 : 16 + 26*(v-mn)/(mx-mn);
+}
+
+function render(st){
+  const svg = document.getElementById("netsvg");
+  ["edges","nodes","nlabels"].forEach(id=>{ document.getElementById(id).innerHTML=""; });
+  const NS="http://www.w3.org/2000/svg";
+
+  // edges
+  EDGES.forEach(e=>{
+    const s=NODES[e.f], t=NODES[e.t];
+    const dx=t.x-s.x, dy=t.y-s.y, dist=Math.sqrt(dx*dx+dy*dy);
+    const rs=getR(e.f,st), rt=getR(e.t,st);
+    const sx=s.x+dx/dist*(rs+2), sy=s.y+dy/dist*(rs+2);
+    const ex=t.x-dx/dist*(rt+3), ey=t.y-dy/dist*(rt+3);
+    const line=document.createElementNS(NS,"line");
+    line.setAttribute("x1",sx.toFixed(1)); line.setAttribute("y1",sy.toFixed(1));
+    line.setAttribute("x2",ex.toFixed(1)); line.setAttribute("y2",ey.toFixed(1));
+    line.setAttribute("stroke","#bbb");
+    line.setAttribute("stroke-width",(0.6+e.w*0.65).toFixed(1));
+    line.setAttribute("opacity",(0.3+e.w*0.12).toFixed(2));
+    line.setAttribute("marker-end","url(#arr)");
+    document.getElementById("edges").appendChild(line);
+  });
+
+  // nodes + labels
+  Object.entries(NODES).forEach(([k,n])=>{
+    const d=STATES[st][k];
+    const r=getR(k,st);
+    const col=RISK_COLOR[d.risk];
+
+    const g=document.createElementNS(NS,"g");
+    g.style.cursor="pointer";
+
+    const circ=document.createElementNS(NS,"circle");
+    circ.setAttribute("cx",n.x); circ.setAttribute("cy",n.y); circ.setAttribute("r",r);
+    circ.setAttribute("fill",col); circ.setAttribute("fill-opacity","0.14");
+    circ.setAttribute("stroke",col); circ.setAttribute("stroke-width","1.8");
+    g.appendChild(circ);
+
+    const ltr=document.createElementNS(NS,"text");
+    ltr.setAttribute("x",n.x); ltr.setAttribute("y",n.y);
+    ltr.setAttribute("text-anchor","middle"); ltr.setAttribute("dominant-baseline","central");
+    ltr.setAttribute("font-size","12"); ltr.setAttribute("font-weight","600");
+    ltr.setAttribute("fill",col); ltr.textContent=k;
+    g.appendChild(ltr);
+
+    const tip=document.createElementNS(NS,"title");
+    const ev = st==="delta" ? (d.eigen>=0?"+":"")+d.eigen.toFixed(3) : d.eigen.toFixed(3);
+    let tipTxt = n.label+" · "+n.role+"\nEigenvector: "+ev+"\nRisk: "+d.risk;
+    if(st!=="delta") tipTxt+="\nDegree (w): "+d.degree+"\nBetweenness: "+d.between+"\nComposite score: "+d.score.toFixed(3);
+    tip.textContent=tipTxt;
+    g.appendChild(tip);
+    document.getElementById("nodes").appendChild(g);
+
+    // name label below node
+    const tl=document.createElementNS(NS,"text");
+    tl.setAttribute("x",n.x); tl.setAttribute("y",n.y+r+13);
+    tl.setAttribute("text-anchor","middle");
+    tl.setAttribute("font-size","10.5");
+    tl.setAttribute("fill","#888");
+    tl.textContent=n.label;
+    document.getElementById("nlabels").appendChild(tl);
+  });
+}
+
+function renderStats(st){
+  const row=document.getElementById("statrow");
+  row.innerHTML="";
+  RANK_ORDER[st].forEach(k=>{
+    const d=STATES[st][k], n=NODES[k];
+    const val=st==="delta"?(d.eigen>=0?"+":"")+d.eigen.toFixed(3):d.eigen.toFixed(3);
+    const card=document.createElement("div");
+    card.className="stat-card";
+    card.innerHTML=`<div class="stat-name">${n.label}</div><div class="stat-val">${val}</div><div class="stat-tier tier-${d.risk}">${d.risk}</div>`;
+    row.appendChild(card);
+  });
+}
+
+function setState(st){
+  document.querySelectorAll(".tog").forEach((b,i)=>{
+    b.classList.toggle("active",["pre","post","delta"][i]===st);
+  });
+  render(st);
+  renderStats(st);
+}
+
+setState("pre");
+</script>
+</body>
+</html>

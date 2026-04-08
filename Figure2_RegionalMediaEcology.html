@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figure 2 — Regional Media Information Ecology Map</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: #f4f4f2;
+    color: #1a1a1a;
+    padding: 32px 24px;
+    min-height: 100vh;
+  }
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    padding: 36px 40px 40px;
+  }
+  .journal-label {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #aaa;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .fig-number { font-size: 13px; font-weight: 600; color: #2c5f8a; margin-bottom: 4px; }
+  .fig-title  { font-size: 18px; font-weight: 500; color: #1a1a1a; line-height: 1.4; margin-bottom: 5px; }
+  .fig-sub    { font-size: 13px; color: #666; margin-bottom: 20px; line-height: 1.5; }
+
+  .filter-row { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 18px; }
+  .pill {
+    font-size: 12px; font-weight: 500;
+    padding: 5px 13px; border-radius: 14px;
+    border: 1px solid #ccc;
+    background: transparent; cursor: pointer; transition: all .15s;
+  }
+  .pill:hover { opacity: 0.8; }
+  .pill-outlet    { color: #185FA5; border-color: #B5D4F4; }
+  .pill-journo    { color: #0F6E56; border-color: #9FE1CB; }
+  .pill-social    { color: #854F0B; border-color: #FAC775; }
+  .pill-bot       { color: #A32D2D; border-color: #F7C1C1; }
+  .pill-community { color: #534AB7; border-color: #CECBF6; }
+  .pill-radio     { color: #5F5E5A; border-color: #D3D1C7; }
+  .pill-outlet.on    { background: #E6F1FB; }
+  .pill-journo.on    { background: #E1F5EE; }
+  .pill-social.on    { background: #FAEEDA; }
+  .pill-bot.on       { background: #FCEBEB; }
+  .pill-community.on { background: #EEEDFE; }
+  .pill-radio.on     { background: #F1EFE8; }
+
+  .svg-wrap { position: relative; border: 1px solid #eee; border-radius: 8px; overflow: visible; }
+  svg { display: block; width: 100%; }
+
+  .tooltip {
+    position: absolute; pointer-events: none; opacity: 0;
+    transition: opacity .15s;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 13px;
+    font-size: 12px;
+    color: #1a1a1a;
+    min-width: 190px;
+    z-index: 20;
+    line-height: 1.7;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .tt-name { font-weight: 600; font-size: 13px; margin-bottom: 3px; }
+  .tt-row  { color: #666; font-size: 11px; }
+
+  .legend {
+    display: flex; gap: 18px; flex-wrap: wrap;
+    margin-top: 16px; padding-top: 14px;
+    border-top: 1px solid #eee;
+  }
+  .leg { display: flex; align-items: center; gap: 7px; font-size: 12px; color: #666; }
+  .leg-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  .size-guide {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 10px; font-size: 11px; color: #aaa;
+  }
+  .sg-circle {
+    border-radius: 50%; background: transparent;
+    border: 1px solid #bbb; flex-shrink: 0;
+  }
+
+  .caption {
+    font-size: 12px; color: #888; margin-top: 16px; line-height: 1.75;
+    border-top: 1px solid #eee; padding-top: 14px;
+  }
+  .caption strong { color: #555; }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+  }
+  .stat-card {
+    background: #f8f8f6; border-radius: 7px;
+    padding: 10px 12px; border: 1px solid #eee;
+  }
+  .stat-label { font-size: 11px; color: #999; margin-bottom: 3px; }
+  .stat-val   { font-size: 18px; font-weight: 500; color: #1a1a1a; }
+  .stat-sub   { font-size: 10px; color: #aaa; margin-top: 1px; }
+
+  .meta {
+    margin-top: 24px; padding-top: 14px; border-top: 1px solid #eee;
+    font-size: 11px; color: #bbb;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+
+  @media (max-width: 600px) {
+    .page { padding: 18px 14px; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="journal-label">Online Journalism Review — Supplementary Interactive Figure</div>
+  <div class="fig-number">Figure 2</div>
+  <div class="fig-title">Regional media information ecology — Greater Lakeshore region (illustrative)</div>
+  <div class="fig-sub">
+    18 actors across 6 actor types. Node size = eigenvector centrality (cascade potential).
+    Edge thickness = amplification weight. Toggle actor types to isolate transmission pathways.
+    Hover nodes for full structural metrics.
+  </div>
+
+  <div class="filter-row">
+    <button class="pill pill-outlet on"    onclick="toggle('outlet')"    id="btn-outlet">    News outlets</button>
+    <button class="pill pill-journo on"    onclick="toggle('journo')"    id="btn-journo">    Journalists</button>
+    <button class="pill pill-social on"    onclick="toggle('social')"    id="btn-social">    Social influencers</button>
+    <button class="pill pill-bot on"       onclick="toggle('bot')"       id="btn-bot">       Automated accounts</button>
+    <button class="pill pill-community on" onclick="toggle('community')" id="btn-community"> Communities</button>
+    <button class="pill pill-radio on"     onclick="toggle('radio')"     id="btn-radio">     Broadcast / radio</button>
+  </div>
+
+  <div class="svg-wrap">
+    <div class="tooltip" id="tt">
+      <div class="tt-name" id="tt-name"></div>
+      <div class="tt-row"  id="tt-type"></div>
+      <div class="tt-row"  id="tt-eigen"></div>
+      <div class="tt-row"  id="tt-risk"></div>
+      <div class="tt-row"  id="tt-role"></div>
+    </div>
+
+    <svg id="ecosvg" viewBox="0 0 860 540">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+      <g id="edge-layer"></g>
+      <g id="node-layer"></g>
+    </svg>
+  </div>
+
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:#185FA5"></div> News outlet</div>
+    <div class="leg"><div class="leg-dot" style="background:#0F6E56"></div> Journalist</div>
+    <div class="leg"><div class="leg-dot" style="background:#854F0B"></div> Social influencer</div>
+    <div class="leg"><div class="leg-dot" style="background:#A32D2D"></div> Automated account</div>
+    <div class="leg"><div class="leg-dot" style="background:#534AB7"></div> Community group</div>
+    <div class="leg"><div class="leg-dot" style="background:#5F5E5A"></div> Broadcast / radio</div>
+  </div>
+
+  <div class="size-guide">
+    <div class="sg-circle" style="width:10px;height:10px;"></div>
+    <div class="sg-circle" style="width:18px;height:18px;"></div>
+    <div class="sg-circle" style="width:26px;height:26px;"></div>
+    <span>Node size = eigenvector centrality (low → high cascade potential)</span>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Total actors</div>
+      <div class="stat-val">18</div>
+      <div class="stat-sub">across 6 types</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Observed edges</div>
+      <div class="stat-val">34</div>
+      <div class="stat-sub">directed transfers</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">High-risk nodes</div>
+      <div class="stat-val">6</div>
+      <div class="stat-sub">top cascade potential</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Observation window</div>
+      <div class="stat-val">7</div>
+      <div class="stat-sub">days of recording</div>
+    </div>
+  </div>
+
+  <div class="caption">
+    <strong>Reading this figure:</strong> This is a hypothetical regional media ecology constructed for illustrative purposes. All actor names are generic. The map demonstrates what a completed Network Ecology of Information analysis produces at regional scale — showing the full distribution of structural roles across a realistic mix of actor types. Node size encodes eigenvector centrality: the larger the node, the greater its cascade amplification potential through connection to other influential actors. Edge direction shows the flow of observed information transfers (repost, citation, hyperlink, mention); edge thickness reflects amplification weight on the 1–4 scale (mention=1, hyperlink=4). Use the actor-type filters to isolate transmission pathways by category — this reveals, for example, that automated accounts (bots) serve as secondary amplifiers feeding into community clusters rather than originating cascades independently.
+    <br><br>
+    <strong>Risk tiers represent relative structural cascade potential within this network snapshot — not claims about actor intent, content accuracy, or political orientation. The framework is content-neutral and jurisdictionally agnostic.</strong>
+  </div>
+
+  <div class="meta">
+    <span>Yip, J. — Network Ecology of Information · Figure 2 (illustrative regional example)</span>
+    <span>Open in any modern browser · No internet connection required</span>
+  </div>
+
+</div>
+
+<script>
+const TYPE_COLOR = {
+  outlet:    "#185FA5",
+  journo:    "#0F6E56",
+  social:    "#854F0B",
+  bot:       "#A32D2D",
+  community: "#534AB7",
+  radio:     "#5F5E5A",
+};
+const TYPE_FILL = {
+  outlet:    "#E6F1FB",
+  journo:    "#E1F5EE",
+  social:    "#FAEEDA",
+  bot:       "#FCEBEB",
+  community: "#EEEDFE",
+  radio:     "#F1EFE8",
+};
+const TYPE_LABEL = {
+  outlet:"News outlet", journo:"Journalist", social:"Social influencer",
+  bot:"Automated account", community:"Community group", radio:"Broadcast / radio"
+};
+
+const ACTORS = [
+  { id:"A1", name:"Lakeshore Daily",        type:"outlet",    x:230, y:120, eigen:0.92, risk:"High",   role:"Superspreader hub" },
+  { id:"A2", name:"Northside Tribune",       type:"outlet",    x:490, y:85,  eigen:0.61, risk:"Medium", role:"Regional broadcaster" },
+  { id:"A3", name:"City Wire (online)",      type:"outlet",    x:680, y:195, eigen:0.44, risk:"Medium", role:"Digital amplifier" },
+  { id:"A4", name:"Reporter M. Chen",        type:"journo",   x:130, y:245, eigen:0.78, risk:"High",   role:"Transmission vector" },
+  { id:"A5", name:"Reporter J. Okafor",      type:"journo",   x:390, y:210, eigen:0.55, risk:"Medium", role:"Structural broker" },
+  { id:"A6", name:"Reporter S. Nguyen",      type:"journo",   x:600, y:320, eigen:0.38, risk:"Low",    role:"Local amplifier" },
+  { id:"A7", name:"@LakeshoreLive",          type:"social",   x:295, y:315, eigen:1.00, risk:"High",   role:"Superspreader" },
+  { id:"A8", name:"@NorthsideUpdates",       type:"social",   x:520, y:390, eigen:0.67, risk:"High",   role:"Cascade amplifier" },
+  { id:"A9", name:"@LocalSportsDesk",        type:"social",   x:105, y:400, eigen:0.29, risk:"Low",    role:"Niche amplifier" },
+  { id:"B1", name:"AutoRepost-Alpha",        type:"bot",      x:400, y:455, eigen:0.48, risk:"Medium", role:"Synthetic amplifier" },
+  { id:"B2", name:"AutoRepost-Beta",         type:"bot",      x:660, y:445, eigen:0.31, risk:"Low",    role:"Synthetic amplifier" },
+  { id:"C1", name:"Residents Forum",         type:"community",x:200, y:465, eigen:0.83, risk:"High",   role:"Influence sink" },
+  { id:"C2", name:"Parents Network",         type:"community",x:560, y:270, eigen:0.59, risk:"Medium", role:"Trust cluster" },
+  { id:"C3", name:"Business Association",    type:"community",x:355, y:95,  eigen:0.41, risk:"Medium", role:"Credibility node" },
+  { id:"C4", name:"Youth Council",           type:"community",x:745, y:350, eigen:0.22, risk:"Low",    role:"Peripheral node" },
+  { id:"R1", name:"WLKS Radio",              type:"radio",    x:95,  y:140, eigen:0.70, risk:"High",   role:"Broadcast hub" },
+  { id:"R2", name:"Community FM",            type:"radio",    x:450, y:160, eigen:0.36, risk:"Low",    role:"Local broadcaster" },
+  { id:"R3", name:"Talk 970 AM",             type:"radio",    x:770, y:110, eigen:0.45, risk:"Medium", role:"Cross-platform node" },
+];
+
+const EDGES = [
+  ["A1","A4",3],["A1","A7",2],["A1","C3",2],["A1","R1",1],["A1","A2",1],
+  ["A2","A5",2],["A2","C3",1],["A2","R2",2],["A2","A3",1],
+  ["A3","A6",2],["A3","C2",1],["A3","C4",1],["A3","R3",1],
+  ["A4","C1",4],["A4","A7",1],["A4","R1",1],
+  ["A5","C2",3],["A5","A8",1],["A5","R2",1],
+  ["A6","C4",2],["A6","C2",1],
+  ["A7","C1",2],["A7","B1",1],["A7","A8",2],
+  ["A8","C1",2],["A8","B1",1],["A8","B2",1],
+  ["A9","C1",1],
+  ["B1","C1",2],["B1","C2",1],
+  ["B2","C4",1],["B2","C2",1],
+  ["R1","A4",1],["R1","C1",2],
+  ["R2","C2",1],
+  ["R3","A3",1],["R3","C3",1],
+];
+
+const vis = { outlet:true, journo:true, social:true, bot:true, community:true, radio:true };
+
+function toggle(type){
+  vis[type] = !vis[type];
+  const btn = document.getElementById("btn-"+type);
+  if(btn) btn.classList.toggle("on", vis[type]);
+  render();
+}
+
+function byId(id){ return ACTORS.find(a=>a.id===id); }
+function getR(e){ return 8 + e*20; }
+
+function render(){
+  const EL = document.getElementById("edge-layer");
+  const NL = document.getElementById("node-layer");
+  EL.innerHTML = ""; NL.innerHTML = "";
+  const NS = "http://www.w3.org/2000/svg";
+
+  EDGES.forEach(([fid,tid,w])=>{
+    const fa=byId(fid), ta=byId(tid);
+    if(!fa||!ta) return;
+    const fv=vis[fa.type], tv=vis[ta.type];
+    if(!fv && !tv) return;
+    const op = (fv&&tv) ? (0.15 + w*0.07) : 0.04;
+    const dx=ta.x-fa.x, dy=ta.y-fa.y, dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<1) return;
+    const rs=getR(fa.eigen), rt=getR(ta.eigen);
+    const sx=fa.x+dx/dist*(rs+1), sy=fa.y+dy/dist*(rs+1);
+    const ex=ta.x-dx/dist*(rt+3), ey=ta.y-dy/dist*(rt+3);
+    const line=document.createElementNS(NS,"line");
+    line.setAttribute("x1",sx.toFixed(1)); line.setAttribute("y1",sy.toFixed(1));
+    line.setAttribute("x2",ex.toFixed(1)); line.setAttribute("y2",ey.toFixed(1));
+    line.setAttribute("stroke","#bbb");
+    line.setAttribute("stroke-width",(0.4+w*0.55).toFixed(1));
+    line.setAttribute("opacity",op.toFixed(2));
+    line.setAttribute("marker-end","url(#arr)");
+    EL.appendChild(line);
+  });
+
+  ACTORS.forEach(a=>{
+    const r=getR(a.eigen);
+    const col=TYPE_COLOR[a.type];
+    const fill=TYPE_FILL[a.type];
+    const visible=vis[a.type];
+
+    const g=document.createElementNS(NS,"g");
+    g.style.cursor="pointer";
+    g.style.opacity=visible?"1":"0.08";
+    g.style.transition="opacity .2s";
+
+    const circ=document.createElementNS(NS,"circle");
+    circ.setAttribute("cx",a.x); circ.setAttribute("cy",a.y); circ.setAttribute("r",r);
+    circ.setAttribute("fill",fill);
+    circ.setAttribute("stroke",col); circ.setAttribute("stroke-width","1.4");
+    g.appendChild(circ);
+
+    const ltr=document.createElementNS(NS,"text");
+    ltr.setAttribute("x",a.x); ltr.setAttribute("y",a.y);
+    ltr.setAttribute("text-anchor","middle"); ltr.setAttribute("dominant-baseline","central");
+    ltr.setAttribute("font-size", r>17?"10.5":"9.5");
+    ltr.setAttribute("font-weight","600");
+    ltr.setAttribute("fill",col);
+    ltr.textContent=a.id;
+    g.appendChild(ltr);
+
+    const short=a.name.length>15?a.name.slice(0,14)+"…":a.name;
+    const lbl=document.createElementNS(NS,"text");
+    lbl.setAttribute("x",a.x); lbl.setAttribute("y",a.y+r+12);
+    lbl.setAttribute("text-anchor","middle");
+    lbl.setAttribute("font-size","9");
+    lbl.setAttribute("fill","#aaa");
+    lbl.textContent=short;
+    g.appendChild(lbl);
+
+    g.addEventListener("mouseenter", ev=>{
+      if(!vis[a.type]) return;
+      const tt=document.getElementById("tt");
+      const svgEl=document.getElementById("ecosvg");
+      const svgR=svgEl.getBoundingClientRect();
+      const wrapR=document.querySelector(".svg-wrap").getBoundingClientRect();
+      const scale=svgR.width/860;
+      let tx=a.x*scale+14;
+      let ty=a.y*scale-14;
+      if(tx+200>svgR.width) tx=a.x*scale-215;
+      if(ty<0) ty=4;
+      tt.style.left=tx+"px"; tt.style.top=ty+"px"; tt.style.opacity="1";
+      document.getElementById("tt-name").textContent=a.name;
+      document.getElementById("tt-name").style.color=col;
+      document.getElementById("tt-type").textContent="Type: "+TYPE_LABEL[a.type];
+      document.getElementById("tt-eigen").textContent="Eigenvector centrality: "+a.eigen.toFixed(2);
+      document.getElementById("tt-risk").textContent="Structural risk tier: "+a.risk;
+      document.getElementById("tt-role").textContent="Network role: "+a.role;
+    });
+    g.addEventListener("mouseleave",()=>{
+      document.getElementById("tt").style.opacity="0";
+    });
+
+    NL.appendChild(g);
+  });
+}
+
+render();
+</script>
+</body>
+</html>

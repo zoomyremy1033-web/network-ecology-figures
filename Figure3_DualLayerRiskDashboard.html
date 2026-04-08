@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figure 3 — Structural Risk × Content Status Dashboard</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: #f4f4f2;
+    color: #1a1a1a;
+    padding: 32px 24px;
+    min-height: 100vh;
+  }
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    padding: 36px 40px 40px;
+  }
+  .journal-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #aaa; font-weight: 600; margin-bottom: 6px; }
+  .fig-number    { font-size: 13px; font-weight: 600; color: #2c5f8a; margin-bottom: 4px; }
+  .fig-title     { font-size: 18px; font-weight: 500; color: #1a1a1a; line-height: 1.4; margin-bottom: 5px; }
+  .fig-sub       { font-size: 13px; color: #666; margin-bottom: 20px; line-height: 1.6; }
+
+  .principle-box {
+    background: #f8f8f6; border-radius: 8px; border-left: 4px solid #2c5f8a;
+    padding: 12px 16px; margin-bottom: 20px; font-size: 13px; color: #444; line-height: 1.7;
+  }
+  .principle-box strong { color: #1a1a1a; }
+
+  .summary-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 20px; }
+  .sum-card { border-radius: 8px; padding: 12px 14px; border: 1px solid #eee; }
+  .sum-label { font-size: 11px; color: #888; margin-bottom: 4px; font-weight: 600; }
+  .sum-val   { font-size: 22px; font-weight: 500; }
+  .sum-sub   { font-size: 11px; color: #aaa; margin-top: 2px; }
+  .card-red   { background:#FCEBEB; } .card-red .sum-val   { color:#A32D2D; }
+  .card-amber { background:#FAEEDA; } .card-amber .sum-val { color:#854F0B; }
+  .card-green { background:#EAF3DE; } .card-green .sum-val { color:#2e7d32; }
+  .card-gray  { background:#f8f8f6; } .card-gray .sum-val  { color:#1a1a1a; }
+
+  .matrix-section { margin-bottom: 20px; }
+  .matrix-label { font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 10px; }
+  .matrix-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; }
+  .mx { border-radius: 8px; padding: 10px 8px; text-align: center; border: 1px solid #eee; }
+  .mx-top   { font-size: 9px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .mx-val   { font-size: 22px; font-weight: 500; }
+  .mx-sub   { font-size: 10px; color: #888; margin-top: 3px; }
+  .mx-red   { background:#FCEBEB; } .mx-red .mx-val   { color:#A32D2D; }
+  .mx-amber { background:#FAEEDA; } .mx-amber .mx-val { color:#854F0B; }
+  .mx-green { background:#EAF3DE; } .mx-green .mx-val { color:#2e7d32; }
+  .mx-blue  { background:#E6F1FB; } .mx-blue .mx-val  { color:#185FA5; }
+  .mx-gray  { background:#f8f8f6; } .mx-gray .mx-val  { color:#444; }
+
+  .filter-row { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 12px; align-items: center; }
+  .filter-label { font-size: 12px; color: #888; margin-right: 2px; }
+  .pill { font-size: 11px; font-weight: 500; padding: 5px 12px; border-radius: 12px; border: 1px solid #ccc; background: transparent; color: #666; cursor: pointer; transition: all .15s; }
+  .pill:hover { border-color: #2c5f8a; color: #2c5f8a; }
+  .pill.on { background: #E6F1FB; color: #185FA5; border-color: #185FA5; }
+  .pill.on-red { background: #FCEBEB; color: #A32D2D; border-color: #E24B4A; }
+
+  .col-head { display: grid; grid-template-columns: 28px 1fr 110px 150px 110px; gap: 10px; padding: 0 14px; margin-bottom: 6px; font-size: 10px; color: #aaa; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+  .col-head span:not(:nth-child(2)) { text-align: right; }
+
+  .actor-grid { display: flex; flex-direction: column; gap: 6px; }
+  .actor-row {
+    display: grid; grid-template-columns: 28px 1fr 110px 150px 110px;
+    align-items: center; gap: 10px;
+    padding: 10px 14px; border-radius: 8px;
+    border: 1px solid #eee;
+    background: #fff;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .actor-row:hover { border-color: #ccc; }
+  .actor-row.struct-High   { border-left: 3px solid #E24B4A; }
+  .actor-row.struct-Medium { border-left: 3px solid #BA7517; }
+  .actor-row.struct-Low    { border-left: 3px solid #3B6D11; }
+  .actor-row.hidden { display: none; }
+
+  .rank { font-size: 12px; color: #bbb; text-align: center; font-weight: 500; }
+  .actor-name { font-size: 13px; font-weight: 500; color: #1a1a1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .actor-type { font-size: 10px; color: #aaa; margin-top: 1px; }
+
+  .badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 10px; }
+  .s-High   { background:#FCEBEB; color:#A32D2D; }
+  .s-Medium { background:#FAEEDA; color:#854F0B; }
+  .s-Low    { background:#EAF3DE; color:#2e7d32; }
+  .c-Unverified  { background:#FCEBEB; color:#A32D2D; }
+  .c-Contested   { background:#FAEEDA; color:#854F0B; }
+  .c-Verified    { background:#EAF3DE; color:#2e7d32; }
+  .c-Satire      { background:#E6F1FB; color:#185FA5; }
+  .c-Procedural  { background:#EEEDFE; color:#534AB7; }
+  .p-red-alert { background:#A32D2D; color:#fff; }
+  .p-monitor   { background:#854F0B; color:#fff; }
+  .p-watch     { background:#FAEEDA; color:#854F0B; border: 1px solid #EF9F27; }
+  .p-positive  { background:#EAF3DE; color:#2e7d32; border: 1px solid #97C459; }
+  .p-neutral   { background:#f8f8f6; color:#888; }
+
+  .score-sub { font-size: 10px; color: #aaa; display: block; margin-top: 2px; text-align: right; }
+  .content-sub { font-size: 9px; color: #aaa; display: block; margin-top: 2px; text-align: right; font-style: italic; }
+
+  .col-right { text-align: right; }
+
+  .caption {
+    font-size: 12px; color: #888; margin-top: 20px; line-height: 1.75;
+    border-top: 1px solid #eee; padding-top: 16px;
+  }
+  .caption strong { color: #555; }
+
+  .legend-row { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 14px; padding-top: 12px; border-top: 1px solid #eee; }
+  .leg { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #666; }
+  .leg-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+  .meta { margin-top: 24px; padding-top: 14px; border-top: 1px solid #eee; font-size: 11px; color: #bbb; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+  @media (max-width: 620px) {
+    .page { padding: 18px 14px; }
+    .summary-row { grid-template-columns: repeat(2,1fr); }
+    .matrix-grid { grid-template-columns: repeat(3,1fr); }
+    .col-head, .actor-row { grid-template-columns: 24px 1fr 90px 110px 90px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="journal-label">Online Journalism Review — Supplementary Interactive Figure</div>
+  <div class="fig-number">Figure 3</div>
+  <div class="fig-title">Dual-layer risk dashboard — structural amplification capacity × content verification status</div>
+  <div class="fig-sub">
+    Two independent analytical layers. Column 1: structural risk derived from network centrality metrics (content-neutral).
+    Column 2: content status assigned by journalist observation. Together they produce an intervention priority — never by combining scores, but by reading their intersection.
+  </div>
+
+  <div class="principle-box">
+    <strong>Core principle:</strong> High amplification of verified content is a positive network signal — the ecology is working correctly.
+    High amplification of unverified or contested content through the same structurally powerful node is the cascade risk that demands intervention.
+    The two layers must remain analytically separate: structural risk is mathematical; content status is observational.
+    <strong>Neither makes a claim about truth — only about verification status and transmission capacity.</strong>
+  </div>
+
+  <div class="summary-row">
+    <div class="sum-card card-red">
+      <div class="sum-label">Red alert</div>
+      <div class="sum-val">3</div>
+      <div class="sum-sub">High risk + unverified — intervene now</div>
+    </div>
+    <div class="sum-card card-amber">
+      <div class="sum-label">Monitor</div>
+      <div class="sum-val">2</div>
+      <div class="sum-sub">High risk + contested — watch closely</div>
+    </div>
+    <div class="sum-card card-green">
+      <div class="sum-label">Positive signal</div>
+      <div class="sum-val">2</div>
+      <div class="sum-sub">High risk + verified — network working well</div>
+    </div>
+    <div class="sum-card card-gray">
+      <div class="sum-label">Watch / neutral</div>
+      <div class="sum-val">11</div>
+      <div class="sum-sub">Lower structural risk</div>
+    </div>
+  </div>
+
+  <div class="matrix-section">
+    <div class="matrix-label">Decision matrix — structural risk × content verification status</div>
+    <div class="matrix-grid">
+      <div class="mx mx-red">
+        <div class="mx-top">Red alert</div>
+        <div class="mx-val">3</div>
+        <div class="mx-sub">High struct + Unverified</div>
+      </div>
+      <div class="mx mx-amber">
+        <div class="mx-top">Monitor</div>
+        <div class="mx-val">2</div>
+        <div class="mx-sub">High struct + Contested</div>
+      </div>
+      <div class="mx mx-green">
+        <div class="mx-top">Positive</div>
+        <div class="mx-val">2</div>
+        <div class="mx-sub">High struct + Verified</div>
+      </div>
+      <div class="mx mx-blue">
+        <div class="mx-top">Watch</div>
+        <div class="mx-val">5</div>
+        <div class="mx-sub">Medium + Unverified</div>
+      </div>
+      <div class="mx mx-gray">
+        <div class="mx-top">Neutral</div>
+        <div class="mx-val">6</div>
+        <div class="mx-sub">Low structural risk</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="filter-row">
+    <span class="filter-label">Filter:</span>
+    <button class="pill on"  id="btn-all"         onclick="filter('all')">All actors</button>
+    <button class="pill"     id="btn-red-alert"   onclick="filter('red-alert')">Red alert only</button>
+    <button class="pill"     id="btn-Unverified"  onclick="filter('Unverified')">Unverified</button>
+    <button class="pill"     id="btn-Contested"   onclick="filter('Contested')">Contested</button>
+    <button class="pill"     id="btn-Verified"    onclick="filter('Verified')">Verified</button>
+    <button class="pill"     id="btn-High"        onclick="filter('High')">High structural risk</button>
+  </div>
+
+  <div class="col-head">
+    <span></span>
+    <span style="text-align:left">Actor</span>
+    <span>Structural risk</span>
+    <span>Content status</span>
+    <span>Priority</span>
+  </div>
+
+  <div class="actor-grid" id="grid"></div>
+
+  <div class="legend-row">
+    <div class="leg"><div class="leg-dot" style="background:#A32D2D"></div>Red alert — intervene immediately</div>
+    <div class="leg"><div class="leg-dot" style="background:#BA7517"></div>Monitor — watch closely</div>
+    <div class="leg"><div class="leg-dot" style="background:#2e7d32"></div>Positive — network functioning well</div>
+    <div class="leg"><div class="leg-dot" style="background:#185FA5"></div>Watch — lower priority</div>
+    <div class="leg"><div class="leg-dot" style="background:#888"></div>Neutral — no action needed</div>
+  </div>
+
+  <div class="caption">
+    <strong>Reading this figure:</strong> Structural risk (column 3) is derived entirely from network centrality metrics — eigenvector centrality, betweenness centrality, and weighted degree — and reflects an actor's capacity to amplify and transmit narratives at scale, independent of content. Content status (column 4) is assigned by journalist observation using five epistemic categories: Verified (independently confirmed by two or more sources), Contested (active factual dispute among credible sources), Unverified (single source, no independent confirmation), Satire (clearly labeled opinion or satirical content), and Procedural (official statements and institutional communications). These categories describe verification status, not political orientation or content quality.
+    <br><br>
+    Intervention priority (column 5) is determined by the intersection of both layers — never by combining them into a single score. A high structural risk actor amplifying verified content (Positive signal) requires no intervention; the network is functioning correctly. The same actor amplifying unverified content (Red alert) requires immediate containment. This distinction is the core applied contribution of the framework: amplification pathway alone is insufficient for intervention decisions — content verification status must be read alongside structural position.
+    <br><br>
+    <strong>Structural risk scores represent network position only — not assessments of actor intent, content accuracy, or political orientation. Content status categories describe verification status as observed by journalists — not truth claims. The framework is content-neutral in its structural layer and epistemically grounded in its content layer.</strong>
+  </div>
+
+  <div class="meta">
+    <span>Yip, J. — Network Ecology of Information · Figure 3 (dual-layer risk dashboard)</span>
+    <span>Open in any modern browser · No internet connection required</span>
+  </div>
+
+</div>
+
+<script>
+const ACTORS = [
+  { name:"@LakeshoreLive",       type:"Social influencer",  struct:"High",   score:0.94, content:"Unverified",  priority:"red-alert",  plabel:"Red alert" },
+  { name:"Lakeshore Daily",      type:"News outlet",         struct:"High",   score:0.88, content:"Verified",    priority:"positive",   plabel:"Positive signal" },
+  { name:"Reporter M. Chen",     type:"Journalist",          struct:"High",   score:0.82, content:"Unverified",  priority:"red-alert",  plabel:"Red alert" },
+  { name:"WLKS Radio",           type:"Broadcast / radio",   struct:"High",   score:0.75, content:"Contested",   priority:"monitor",    plabel:"Monitor" },
+  { name:"Residents Forum",      type:"Community group",     struct:"High",   score:0.72, content:"Unverified",  priority:"red-alert",  plabel:"Red alert" },
+  { name:"@NorthsideUpdates",    type:"Social influencer",   struct:"High",   score:0.68, content:"Contested",   priority:"monitor",    plabel:"Monitor" },
+  { name:"Reporter J. Okafor",   type:"Journalist",          struct:"Medium", score:0.57, content:"Verified",    priority:"positive",   plabel:"Positive signal" },
+  { name:"Parents Network",      type:"Community group",     struct:"Medium", score:0.55, content:"Unverified",  priority:"watch",      plabel:"Watch" },
+  { name:"Northside Tribune",    type:"News outlet",         struct:"Medium", score:0.54, content:"Procedural",  priority:"neutral",    plabel:"Neutral" },
+  { name:"AutoRepost-Alpha",     type:"Automated account",   struct:"Medium", score:0.46, content:"Unverified",  priority:"watch",      plabel:"Watch" },
+  { name:"Business Association", type:"Community group",     struct:"Medium", score:0.41, content:"Verified",    priority:"neutral",    plabel:"Neutral" },
+  { name:"Talk 970 AM",          type:"Broadcast / radio",   struct:"Medium", score:0.41, content:"Contested",   priority:"watch",      plabel:"Watch" },
+  { name:"City Wire (online)",   type:"News outlet",         struct:"Medium", score:0.40, content:"Unverified",  priority:"watch",      plabel:"Watch" },
+  { name:"Reporter S. Nguyen",   type:"Journalist",          struct:"Low",    score:0.34, content:"Satire",      priority:"neutral",    plabel:"Neutral" },
+  { name:"Community FM",         type:"Broadcast / radio",   struct:"Low",    score:0.32, content:"Verified",    priority:"neutral",    plabel:"Neutral" },
+  { name:"AutoRepost-Beta",      type:"Automated account",   struct:"Low",    score:0.27, content:"Unverified",  priority:"neutral",    plabel:"Neutral" },
+  { name:"@LocalSportsDesk",     type:"Social influencer",   struct:"Low",    score:0.25, content:"Procedural",  priority:"neutral",    plabel:"Neutral" },
+  { name:"Youth Council",        type:"Community group",     struct:"Low",    score:0.18, content:"Verified",    priority:"neutral",    plabel:"Neutral" },
+];
+
+const P_CLASS = { "red-alert":"p-red-alert", "monitor":"p-monitor", "watch":"p-watch", "positive":"p-positive", "neutral":"p-neutral" };
+let currentFilter = "all";
+
+function render(){
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+  let rank = 0;
+  ACTORS.forEach(a=>{
+    rank++;
+    const show =
+      currentFilter === "all" ||
+      (currentFilter === "red-alert"  && a.priority === "red-alert") ||
+      (currentFilter === "Unverified" && a.content  === "Unverified") ||
+      (currentFilter === "Contested"  && a.content  === "Contested") ||
+      (currentFilter === "Verified"   && a.content  === "Verified") ||
+      (currentFilter === "High"       && a.struct   === "High");
+
+    const row = document.createElement("div");
+    row.className = `actor-row struct-${a.struct}${show ? "" : " hidden"}`;
+    row.innerHTML = `
+      <div class="rank">${rank}</div>
+      <div>
+        <div class="actor-name" title="${a.name}">${a.name}</div>
+        <div class="actor-type">${a.type}</div>
+      </div>
+      <div class="col-right">
+        <span class="badge s-${a.struct}">${a.struct}</span>
+        <span class="score-sub">${a.score.toFixed(2)} composite</span>
+      </div>
+      <div class="col-right">
+        <span class="badge c-${a.content}">${a.content}</span>
+        <span class="content-sub">journalist observation</span>
+      </div>
+      <div class="col-right">
+        <span class="badge ${P_CLASS[a.priority]}">${a.plabel}</span>
+      </div>
+    `;
+    grid.appendChild(row);
+  });
+}
+
+function filter(key){
+  currentFilter = key;
+  document.querySelectorAll(".pill").forEach(b=>{ b.classList.remove("on"); b.classList.remove("on-red"); });
+  const btn = document.getElementById("btn-"+key);
+  if(btn){
+    btn.classList.add(key === "red-alert" ? "on-red" : "on");
+  }
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figure 4 — Network Ecology of Information Risk Assessment Calculator</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: #f4f4f2;
+    color: #1a1a1a;
+    padding: 32px 24px;
+    min-height: 100vh;
+  }
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    padding: 36px 40px 40px;
+  }
+  .journal-label {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #888;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .fig-number { font-size: 13px; font-weight: 600; color: #2c5f8a; margin-bottom: 4px; }
+  .fig-title  { font-size: 18px; font-weight: 500; color: #1a1a1a; line-height: 1.4; margin-bottom: 5px; }
+  .fig-sub    { font-size: 13px; color: #666; margin-bottom: 24px; line-height: 1.55; }
+  .fig-sub code { background: #eef1f5; padding: 1px 5px; border-radius: 4px; font-size: 12px; border: 1px solid #dde3ea; }
+
+  /* ---- light, print-friendly calculator mockup ---- */
+  .calc-panel {
+    background: #fbfbfa;
+    border: 2px solid #1a1a1a;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .tab-bar {
+    display: flex;
+    gap: 2px;
+    background: #ffffff;
+    padding: 0 20px;
+    border-bottom: 2px solid #1a1a1a;
+  }
+  .tab {
+    font-size: 13px;
+    font-weight: 700;
+    color: #9aa1ab;
+    padding: 14px 16px 12px;
+    border-bottom: 3px solid transparent;
+  }
+  .tab.active { color: #1a1a1a; border-bottom-color: #c9761e; }
+
+  .panel-body { padding: 22px 26px 26px; }
+
+  .howto {
+    background: #eef7f4;
+    border: 1.5px solid #2f8f6f;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: #1a1a1a;
+    line-height: 1.7;
+    margin-bottom: 22px;
+  }
+  .howto strong { color: #1e6b52; font-weight: 700; }
+
+  .section-label {
+    font-size: 12px; font-weight: 800; color: #1a4a75;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #cfdcea;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 2fr 1.3fr 1.3fr 0.7fr auto;
+    gap: 10px;
+    align-items: end;
+    background: #ffffff;
+    border: 1.5px solid #b8c0cc;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+  }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label { font-size: 10px; color: #55606e; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+  .field input, .field select {
+    background: #fbfbfa; border: 1.5px solid #8a94a3; border-radius: 5px;
+    color: #1a1a1a; font-size: 12px; padding: 7px 9px; font-weight: 600;
+    font-family: Consolas, Menlo, monospace;
+  }
+  .add-btn {
+    background: #1a1a1a; color: #ffffff; font-size: 12px; font-weight: 700;
+    border-radius: 5px; padding: 8px 14px; white-space: nowrap;
+  }
+  .helper-text { font-size: 10.5px; color: #55606e; font-weight: 500; margin: 4px 0 20px; }
+
+  .csv-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 14px; }
+  .upload-zone {
+    border: 2px dashed #1a4a75; border-radius: 8px;
+    background: #f3f7fb;
+    padding: 14px 16px; position: relative;
+  }
+  .upload-num {
+    position: absolute; top: -12px; left: 14px;
+    background: #c9761e; color: #ffffff; font-size: 11px; font-weight: 800;
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid #ffffff;
+  }
+  .upload-cols { font-size: 10.5px; color: #1a4a75; font-weight: 700; font-family: Consolas, Menlo, monospace; margin-bottom: 8px; }
+  .upload-drop { font-size: 12px; color: #55606e; font-weight: 600; text-align: center; padding: 10px 0; }
+  .csv-preview {
+    background: #1a1a1a; border-radius: 6px; padding: 10px 12px;
+    font-family: Consolas, Menlo, monospace; font-size: 10.5px; line-height: 1.65;
+    color: #d8f0e5; border: 1.5px solid #1a1a1a;
+  }
+  .csv-preview .fname { color: #aab4c2; font-weight: 700; }
+  .csv-preview .hdr { color: #7fb8e8; font-weight: 700; }
+
+  .action-row { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+  .btn { font-size: 12.5px; font-weight: 800; padding: 10px 18px; border-radius: 7px; border: 2px solid transparent; }
+  .btn-primary { background: #c9761e; color: #ffffff; border-color: #a5610f; }
+  .btn-secondary { background: #ffffff; color: #1a1a1a; border-color: #1a1a1a; }
+  .btn-danger { background: #ffffff; color: #b8352a; border-color: #b8352a; }
+
+  .caption {
+    font-size: 12px; color: #666; margin-top: 22px; line-height: 1.7;
+    border-top: 1px solid #eee; padding-top: 14px;
+  }
+  .caption strong { color: #444; }
+  .meta {
+    margin-top: 22px; padding-top: 14px; border-top: 1px solid #eee;
+    font-size: 11px; color: #aaa;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+  @media (max-width: 700px) {
+    .page { padding: 20px 16px; }
+    .field-row { grid-template-columns: 1fr 1fr; }
+    .csv-row { grid-template-columns: 1fr; }
+  }
+  @media print {
+    body { background: #ffffff; padding: 0; }
+    .page { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="journal-label">Online Journalism Review — Supplementary Interactive Figure</div>
+  <div class="fig-number">Figure 4</div>
+  <div class="fig-title">Network Ecology of Information — Risk Assessment Calculator (Network Input)</div>
+  <div class="fig-sub">
+    Add actors and observed interactions directly, or upload CSV files at the locations indicated (1, 2).
+    The calculator computes structural risk scores and dual-layer intervention recommendations entirely
+    in the browser. Sample CSV templates: <code>osf.io/ac5sm/files/osfstorage</code>
+  </div>
+
+  <div class="calc-panel">
+    <div class="tab-bar">
+      <div class="tab active">Network input</div>
+      <div class="tab">Network graph</div>
+      <div class="tab">Risk results</div>
+      <div class="tab">Intervention</div>
+      <div class="tab">Methodology</div>
+    </div>
+
+    <div class="panel-body">
+      <div class="howto">
+        <strong>How to use</strong> — Step 1: Add actors (nodes) with their type and content verification status —
+        what are they currently amplifying? Step 2: Add observed interactions (edges) — who mentioned, retweeted,
+        quoted, or linked to whom, and how many times? Step 3: Compute risk scores. Or load the paper's illustrative
+        example to explore first.
+      </div>
+
+      <div class="section-label">Actors (nodes)</div>
+      <div class="field-row">
+        <div class="field"><label>Name</label><input value="e.g. Influencer B" readonly></div>
+        <div class="field"><label>Type</label><select><option>News outlet</option></select></div>
+        <div class="field"><label>Content status</label><select><option>Verified</option></select></div>
+        <div class="field"><label>Count</label><input value="1" readonly></div>
+        <div class="add-btn">+ Add</div>
+      </div>
+      <div class="helper-text">Content status = what this actor is currently amplifying, as observed by journalist</div>
+
+      <div class="section-label">Observed interactions (edges)</div>
+      <div class="field-row">
+        <div class="field"><label>Source</label><select><option>Source actor</option></select></div>
+        <div class="field"><label>Target</label><select><option>Target actor</option></select></div>
+        <div class="field"><label>Interaction type</label><select><option>Mention (weight 1)</option></select></div>
+        <div class="field"><label>Count</label><input value="1" readonly></div>
+        <div class="add-btn">+ Add</div>
+      </div>
+      <div class="helper-text">Interaction weights: Mention=1 &middot; Retweet=2 &middot; Quote=3 &middot; Hyperlink=4 &middot; Count = observed frequency</div>
+
+      <div class="section-label">CSV upload</div>
+      <div class="csv-row">
+        <div class="upload-zone">
+          <div class="upload-num">1</div>
+          <div class="upload-cols">actors.csv — name, type, content_status</div>
+          <div class="upload-drop">drop actors.csv or click</div>
+        </div>
+        <div class="upload-zone">
+          <div class="upload-num">2</div>
+          <div class="upload-cols">interactions.csv — source, target, type, count</div>
+          <div class="upload-drop">drop interactions.csv or click</div>
+        </div>
+      </div>
+
+      <div class="csv-row">
+        <div class="csv-preview">
+          <span class="fname">actors.csv</span><br>
+          <span class="hdr">name,type,content_status</span><br>
+          Influencer B,influencer,Unverified<br>
+          News Site A,outlet,Verified<br>
+          Bot C,bot,Contested
+        </div>
+        <div class="csv-preview">
+          <span class="fname">interactions.csv</span><br>
+          <span class="hdr">source,target,type,count</span><br>
+          Influencer B,Community E,retweet,18<br>
+          Bot C,Community E,retweet,22<br>
+          Journalist D,Community E,hyperlink,4
+        </div>
+      </div>
+
+      <div class="action-row">
+        <div class="btn btn-primary">&#9656; Compute risk scores</div>
+        <div class="btn btn-secondary">Load paper example</div>
+        <div class="btn btn-secondary">&#8595; Export CSV</div>
+        <div class="btn btn-danger">&times; Clear</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="caption">
+    <strong>Reading this figure:</strong> The Network Input screen accepts actor and interaction data either
+    through direct entry or CSV upload (locations 1 and 2), following the field formats specified in Appendix A
+    (Tables 7–8). Selecting "Load paper example" reproduces the five-node network from Section 7; computing risk
+    scores from it reproduces the values in Table 3 exactly. Subsequent tabs (Network graph, Risk results,
+    Intervention, Methodology) present the resulting structural risk scores, the dual-layer decision matrix, and
+    the full formula specification — see Sections 6 and 9.
+  </div>
+
+  <div class="meta">
+    <span>Yip, J. — Network Ecology of Information framework · 5D Risk Assessment Model</span>
+    <span>Interactive figure · Open in any modern browser · No internet connection required</span>
+  </div>
+
+</div>
+</body>
+</html>

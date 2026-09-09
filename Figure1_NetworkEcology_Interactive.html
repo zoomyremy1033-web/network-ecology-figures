@@ -104,6 +104,7 @@
   .stat-name { font-size: 11px; color: #888; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .stat-val  { font-size: 16px; font-weight: 500; color: #1a1a1a; }
   .stat-tier { font-size: 10px; margin-top: 2px; font-weight: 600; }
+  .tier-Critical  { color: #7a0c0c; }
   .tier-High      { color: #c0392b; }
   .tier-Medium    { color: #b7700a; }
   .tier-Low       { color: #2e7d32; }
@@ -181,14 +182,14 @@
     <strong>Reading this figure:</strong> Nodes represent actors in a regional media information ecology.
     Node size encodes eigenvector centrality — an actor's cascade potential derived from connection to other
     high-influence nodes, the primary structural mechanism behind credibility laundering.
-    Node color encodes structural risk tier computed from the composite formula:
-    <em>Risk = 0.4(Eigenvector) + 0.3(Weighted Degree) + 0.3(Betweenness)</em>.
+    Node color encodes Centrality Risk tier computed from the composite formula:
+    <em>Centrality Risk = 0.25(Degree) + 0.35(Betweenness) + 0.20(Closeness) + 0.20(Eigenvector)</em>.
     Directed edges show observed information transfers; edge thickness reflects amplification weight.
     The post-intervention state models a containment-only intervention — tie-strength reduction on
     high-risk nodes without actor removal — consistent with the epidemiological principle of reducing
     transmission virulence while preserving network integrity.
-    Betweenness and closeness centrality (structural backbone) remain unchanged across both states,
-    confirming that the intervention does not fragment the network.
+    Closeness centrality is purely topological and does not change under tie-strength reduction alone,
+    which is why Community E's Critical tier persists across both states (see Section 8).
     <br><br>
     <strong>Risk tiers represent relative structural cascade potential within this network snapshot — not
     claims about actor intent, content accuracy, or political orientation. The framework is content-neutral
@@ -204,11 +205,11 @@
 
 <script>
 const NODES = {
-  A: { label:"News Site A",  role:"Source node",          x:130, y:300 },
-  B: { label:"Influencer B", role:"Superspreader",        x:340, y: 80 },
-  C: { label:"Bot C",        role:"Amplification hub",    x:580, y:210 },
-  D: { label:"Journalist D", role:"Transmission vector",  x:160, y:175 },
-  E: { label:"Community E",  role:"Influence sink",       x:460, y:318 },
+  A: { label:"News Site A",  role:"Peripheral node",        x:130, y:300 },
+  B: { label:"Influencer B", role:"Amplification hub",      x:340, y: 80 },
+  C: { label:"Bot C",        role:"Cascade amplifier",      x:580, y:210 },
+  D: { label:"Journalist D", role:"Verified structural broker", x:160, y:175 },
+  E: { label:"Community E",  role:"Structural chokepoint",  x:460, y:318 },
 };
 
 const EDGES = [
@@ -216,44 +217,41 @@ const EDGES = [
   { f:"B", t:"E", w:2 },
   { f:"C", t:"E", w:2 },
   { f:"D", t:"E", w:4 },
-  { f:"B", t:"D", w:1 },
-  { f:"A", t:"D", w:1 },
-  { f:"A", t:"E", w:1 },
 ];
 
 const STATES = {
   pre: {
-    A:{ eigen:0.509, degree:1.75, between:0.000, risk:"Medium", score:0.402 },
-    B:{ eigen:1.000, degree:4.75, between:0.250, risk:"High",   score:1.150 },
-    C:{ eigen:0.733, degree:2.75, between:0.083, risk:"High",   score:0.743 },
-    D:{ eigen:0.686, degree:3.00, between:0.250, risk:"Low",    score:0.824 },
-    E:{ eigen:0.395, degree:1.75, between:0.083, risk:"Medium", score:0.506 },
+    A:{ eigen:0.026, degree:0.031, between:0.000, close:0.444, risk:"Low",      score:0.102 },
+    B:{ eigen:0.820, degree:0.406, between:0.600, close:0.667, risk:"Medium",   score:0.609 },
+    C:{ eigen:1.000, degree:0.458, between:0.000, close:0.500, risk:"Medium",   score:0.415 },
+    D:{ eigen:0.364, degree:0.167, between:0.000, close:0.500, risk:"Low",      score:0.214 },
+    E:{ eigen:0.851, degree:1.000, between:1.000, close:0.800, risk:"Critical", score:0.930 },
   },
   post: {
-    A:{ eigen:0.399, degree:1.00, between:0.000, risk:"Medium", score:0.337 },
-    B:{ eigen:0.661, degree:2.00, between:0.250, risk:"Medium", score:0.864 },
-    C:{ eigen:0.571, degree:1.50, between:0.083, risk:"Medium", score:0.534 },
-    D:{ eigen:1.000, degree:2.75, between:0.250, risk:"High",   score:1.000 },
-    E:{ eigen:0.926, degree:2.25, between:0.083, risk:"Medium", score:0.673 },
+    A:{ eigen:0.045, degree:0.031, between:0.000, close:0.444, risk:"Low",      score:0.121 },
+    B:{ eigen:0.461, degree:0.406, between:0.600, close:0.667, risk:"Medium",   score:0.515 },
+    C:{ eigen:0.550, degree:0.458, between:0.000, close:0.500, risk:"Low",      score:0.279 },
+    D:{ eigen:1.000, degree:0.167, between:0.000, close:0.500, risk:"Medium",   score:0.425 },
+    E:{ eigen:0.794, degree:1.000, between:1.000, close:0.800, risk:"Critical", score:0.919 },
   },
   delta: {
-    A:{ eigen:-0.110, risk:"Stable",    score:-0.065 },
-    B:{ eigen:-0.339, risk:"Decreased", score:-0.286 },
-    C:{ eigen:-0.162, risk:"Stable",    score:-0.209 },
-    D:{ eigen:+0.314, risk:"Stable",    score:+0.176 },
-    E:{ eigen:+0.531, risk:"Increased", score:+0.167 },
+    A:{ eigen:+0.019, risk:"Stable",   score:+0.019 },
+    B:{ eigen:-0.359, risk:"Stable",   score:-0.094 },
+    C:{ eigen:-0.450, risk:"Decreased",score:-0.136 },
+    D:{ eigen:+0.636, risk:"Increased",score:+0.211 },
+    E:{ eigen:-0.057, risk:"Stable",   score:-0.011 },
   }
 };
 
 const RISK_COLOR = {
-  High:"#c0392b", Medium:"#b7700a", Low:"#2e7d32",
+  Critical:"#7a0c0c", High:"#c0392b", Medium:"#b7700a", Low:"#2e7d32",
   Stable:"#888", Increased:"#1D9E75", Decreased:"#c0392b"
 };
 
 const RANK_ORDER = {
-  pre:  ["B","C","D","A","E"],
-  post: ["D","E","B","C","A"],
-  delta:["E","D","C","B","A"],
+  pre:  ["C","E","B","D","A"],
+  post: ["D","E","C","B","A"],
+  delta:["D","C","B","E","A"],
 };
 
 function getR(key, st){
@@ -310,7 +308,7 @@ function render(st){
     const tip=document.createElementNS(NS,"title");
     const ev = st==="delta" ? (d.eigen>=0?"+":"")+d.eigen.toFixed(3) : d.eigen.toFixed(3);
     let tipTxt = n.label+" · "+n.role+"\nEigenvector: "+ev+"\nRisk: "+d.risk;
-    if(st!=="delta") tipTxt+="\nDegree (w): "+d.degree+"\nBetweenness: "+d.between+"\nComposite score: "+d.score.toFixed(3);
+    if(st!=="delta") tipTxt+="\nDegree: "+d.degree.toFixed(3)+"\nBetweenness: "+d.between.toFixed(3)+"\nCloseness: "+d.close.toFixed(3)+"\nCentrality Risk: "+d.score.toFixed(3);
     tip.textContent=tipTxt;
     g.appendChild(tip);
     document.getElementById("nodes").appendChild(g);

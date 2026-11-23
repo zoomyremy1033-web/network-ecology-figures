@@ -194,9 +194,9 @@
       <div class="stat-sub">directed transfers</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">High-risk nodes</div>
-      <div class="stat-val">6</div>
-      <div class="stat-sub">top cascade potential</div>
+      <div class="stat-label">Critical or High tier</div>
+      <div class="stat-val">2</div>
+      <div class="stat-sub">by structural screening score</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">Observation window</div>
@@ -206,7 +206,7 @@
   </div>
 
   <div class="caption">
-    <strong>Reading this figure:</strong> This is a hypothetical regional media ecology constructed for illustrative purposes. All actor names are generic. The map demonstrates what a completed Network Ecology of Information analysis produces at regional scale — showing the full distribution of structural roles across a realistic mix of actor types. Node size encodes eigenvector centrality: the larger the node, the greater its cascade amplification potential through connection to other influential actors. Edge direction shows the flow of observed information transfers (repost, citation, hyperlink, mention); edge thickness reflects amplification weight on the 1–4 scale (mention=1, hyperlink=4). Use the actor-type filters to isolate transmission pathways by category — this reveals, for example, that automated accounts (bots) serve as secondary amplifiers feeding into community clusters rather than originating cascades independently.
+    <strong>Reading this figure:</strong> This is a hypothetical regional media ecology constructed for illustrative purposes. All actor names are generic. The map demonstrates what a completed Network Ecology of Information analysis produces at regional scale — showing the full distribution of structural roles across a realistic mix of actor types. Node size encodes eigenvector centrality computed from the observed edges; node colour encodes actor type: the larger the node, the greater its cascade amplification potential through connection to other influential actors. Edge direction shows the flow of observed information transfers (repost, citation, hyperlink, mention); edge thickness reflects amplification weight on the 1–4 scale (mention=1, hyperlink=4). Use the actor-type filters to isolate transmission pathways by category — this reveals, for example, that automated accounts (bots) serve as secondary amplifiers feeding into community clusters rather than originating cascades independently.
     <br><br>
     <strong>Risk tiers represent relative structural cascade potential within this network snapshot — not claims about actor intent, content accuracy, or political orientation. The framework is content-neutral and jurisdictionally agnostic.</strong>
   </div>
@@ -241,24 +241,24 @@ const TYPE_LABEL = {
 };
 
 const ACTORS = [
-  { id:"A1", name:"Lakeshore Daily",        type:"outlet",    x:230, y:120, eigen:0.92, risk:"High",   role:"Superspreader hub" },
-  { id:"A2", name:"Northside Tribune",       type:"outlet",    x:490, y:85,  eigen:0.61, risk:"Medium", role:"Regional broadcaster" },
-  { id:"A3", name:"City Wire (online)",      type:"outlet",    x:680, y:195, eigen:0.44, risk:"Medium", role:"Digital amplifier" },
-  { id:"A4", name:"Reporter M. Chen",        type:"journo",   x:130, y:245, eigen:0.78, risk:"High",   role:"Transmission vector" },
-  { id:"A5", name:"Reporter J. Okafor",      type:"journo",   x:390, y:210, eigen:0.55, risk:"Medium", role:"Structural broker" },
-  { id:"A6", name:"Reporter S. Nguyen",      type:"journo",   x:600, y:320, eigen:0.38, risk:"Low",    role:"Local amplifier" },
-  { id:"A7", name:"@LakeshoreLive",          type:"social",   x:295, y:315, eigen:1.00, risk:"High",   role:"Superspreader" },
-  { id:"A8", name:"@NorthsideUpdates",       type:"social",   x:520, y:390, eigen:0.67, risk:"High",   role:"Cascade amplifier" },
-  { id:"A9", name:"@LocalSportsDesk",        type:"social",   x:105, y:400, eigen:0.29, risk:"Low",    role:"Niche amplifier" },
-  { id:"B1", name:"AutoRepost-Alpha",        type:"bot",      x:400, y:455, eigen:0.48, risk:"Medium", role:"Synthetic amplifier" },
-  { id:"B2", name:"AutoRepost-Beta",         type:"bot",      x:660, y:445, eigen:0.31, risk:"Low",    role:"Synthetic amplifier" },
-  { id:"C1", name:"Residents Forum",         type:"community",x:200, y:465, eigen:0.83, risk:"High",   role:"Influence sink" },
-  { id:"C2", name:"Parents Network",         type:"community",x:560, y:270, eigen:0.59, risk:"Medium", role:"Trust cluster" },
-  { id:"C3", name:"Business Association",    type:"community",x:355, y:95,  eigen:0.41, risk:"Medium", role:"Credibility node" },
-  { id:"C4", name:"Youth Council",           type:"community",x:745, y:350, eigen:0.22, risk:"Low",    role:"Peripheral node" },
-  { id:"R1", name:"WLKS Radio",              type:"radio",    x:95,  y:140, eigen:0.70, risk:"High",   role:"Broadcast hub" },
-  { id:"R2", name:"Community FM",            type:"radio",    x:450, y:160, eigen:0.36, risk:"Low",    role:"Local broadcaster" },
-  { id:"R3", name:"Talk 970 AM",             type:"radio",    x:770, y:110, eigen:0.45, risk:"Medium", role:"Cross-platform node" },
+  { id:"A1", name:"Lakeshore Daily",        type:"outlet",    x:230, y:120, eigen:0.646, risk:"High",   role:"Amplification hub" },
+  { id:"A2", name:"Northside Tribune",       type:"outlet",    x:490, y:85,  eigen:0.182, risk:"Medium", role:"Regional broadcaster" },
+  { id:"A3", name:"City Wire (online)",      type:"outlet",    x:680, y:195, eigen:0.062, risk:"Medium", role:"Digital amplifier" },
+  { id:"A4", name:"Reporter M. Chen",        type:"journo",   x:130, y:245, eigen:0.896, risk:"Medium",   role:"Transmission vector" },
+  { id:"A5", name:"Reporter J. Okafor",      type:"journo",   x:390, y:210, eigen:0.183, risk:"Medium", role:"Structural broker" },
+  { id:"A6", name:"Reporter S. Nguyen",      type:"journo",   x:600, y:320, eigen:0.043, risk:"Low",    role:"Local amplifier" },
+  { id:"A7", name:"@LakeshoreLive",          type:"social",   x:295, y:315, eigen:0.714, risk:"Medium",   role:"Amplification hub" },
+  { id:"A8", name:"@NorthsideUpdates",       type:"social",   x:520, y:390, eigen:0.521, risk:"Medium",   role:"Cascade amplifier" },
+  { id:"A9", name:"@LocalSportsDesk",        type:"social",   x:105, y:400, eigen:0.126, risk:"Low",    role:"Niche amplifier" },
+  { id:"B1", name:"AutoRepost-Alpha",        type:"bot",      x:400, y:455, eigen:0.428, risk:"Medium", role:"Synthetic amplifier" },
+  { id:"B2", name:"AutoRepost-Beta",         type:"bot",      x:660, y:445, eigen:0.090, risk:"Low",    role:"Synthetic amplifier" },
+  { id:"C1", name:"Residents Forum",         type:"community",x:200, y:465, eigen:1.000, risk:"Critical",   role:"Influence sink" },
+  { id:"C2", name:"Parents Network",         type:"community",x:560, y:270, eigen:0.159, risk:"Medium", role:"Trust cluster" },
+  { id:"C3", name:"Business Association",    type:"community",x:355, y:95,  eigen:0.190, risk:"Low", role:"Credibility node" },
+  { id:"C4", name:"Youth Council",           type:"community",x:745, y:350, eigen:0.030, risk:"Low",    role:"Peripheral node" },
+  { id:"R1", name:"WLKS Radio",              type:"radio",    x:95,  y:140, eigen:0.447, risk:"Low",   role:"Broadcast hub" },
+  { id:"R2", name:"Community FM",            type:"radio",    x:450, y:160, eigen:0.089, risk:"Low",    role:"Local broadcaster" },
+  { id:"R3", name:"Talk 970 AM",             type:"radio",    x:770, y:110, eigen:0.032, risk:"Low", role:"Cross-platform node" },
 ];
 
 const EDGES = [
@@ -368,7 +368,7 @@ function render(){
       document.getElementById("tt-name").style.color=col;
       document.getElementById("tt-type").textContent="Type: "+TYPE_LABEL[a.type];
       document.getElementById("tt-eigen").textContent="Eigenvector centrality: "+a.eigen.toFixed(2);
-      document.getElementById("tt-risk").textContent="Structural risk tier: "+a.risk;
+      document.getElementById("tt-risk").textContent="structural tier: "+a.risk;
       document.getElementById("tt-role").textContent="Network role: "+a.role;
     });
     g.addEventListener("mouseleave",()=>{
